@@ -1,36 +1,48 @@
 import { galleryItems } from "./gallery-items.js";
-console.log(galleryItems);
+// console.log(galleryItems);
 
 const containerForGallery = document.querySelector(".gallery");
+const galleryMarkap = makeGallery(galleryItems);
+containerForGallery.insertAdjacentHTML("afterbegin", galleryMarkap);
 
-let galleryItemEl = "";
-const makeGallery = galleryItems.map((key) => {
-  galleryItemEl += `
-        <div class="gallery__item">
+function makeGallery(galleryItems) {
+  return galleryItems
+    .map(({ preview, original, description }) => {
+      return `<div class="gallery__item">
         <a class="gallery__link" href="#">
                 <img
                     class="gallery__image"
-                    src="${key.preview}"
-                    data-source="${key.original}"
-                    alt="${key.description}"
+                    src="${preview}"
+                    data-source="${original}"
+
+                     
+                    alt="${description}"
                 />
                 </a>
         </div>`;
-});
-console.log(makeGallery);
+    })
+    .join("");
+}
+// console.log(galleryMarkap);
 
-containerForGallery.insertAdjacentHTML("afterbegin", galleryItemEl);
-
-containerForGallery.addEventListener("click", onClickGalleryItem);
-
-function onClickGalleryItem(e) {
-  if (e.target.nodeName !== "IMG") {
-    return;
+function openModal(event) {
+  event.preventDefault();
+  const instance = basicLightbox.create(`
+    <img src="${event.target.dataset.source}" width="800" height="600" >
+	`);
+  // console.log(instance);
+  instance.show();
+  // console.log(basicLightbox);
+  function onEscKeyPress(e) {
+    if (!basicLightbox.visible()) {
+      return;
+    }
+    if (e.code === "Escape") {
+      instance.close();
+      window.removeEventListener("keydown", onEscKeyPress);
+    }
+    console.log(e.code);
   }
-  console.log(e.target);
+  window.addEventListener("keydown", onEscKeyPress);
 }
-
-function onOpenModal(e) {
-  console.log(e.target.dataset.source);
-}
-containerForGallery.addEventListener("click", onOpenModal);
+containerForGallery.addEventListener("click", openModal);
