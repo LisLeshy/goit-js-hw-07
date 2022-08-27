@@ -30,13 +30,13 @@ function openModal(event) {
   const instance = basicLightbox.create(`
     <img src="${event.target.dataset.source}" width="800" height="600" >
 	`);
-  // console.log(instance);
   instance.show();
-  // console.log(basicLightbox);
   function onEscKeyPress(e) {
     if (!basicLightbox.visible()) {
       return;
     }
+    console.log(basicLightbox);
+
     if (e.code === "Escape") {
       instance.close();
       window.removeEventListener("keydown", onEscKeyPress);
